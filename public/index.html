@@ -32,7 +32,7 @@
     <script src="./navbutton.js"></script>
   </div>
 
-  <div class="w-full max-w-md p-8 mx-auto mt-24 bg-white shadow-lg rounded-lg text-center">
+  <div class="w-full max-w-xl p-8 mx-auto mt-24 bg-white shadow-lg rounded-lg text-center">
     <div id="game-1-block" class="hidden">
       <p>Maze game</p>
       <pre>
@@ -52,15 +52,58 @@
     </div>
 
     <div id="game-2-block" class="hidden">
-      <p class="p-8 text-lg">Clicker game</p>
+      <p class="p-8 text-xl">Clicker game</p>
 
       <p class="text-sm">Total clicks:</p>
       <p class="text-sm" id="total-clicker-output"></p>
       <p class="text-base">Current clicks:</p>
-      <p class="text-base" id="clicker-output"></p>
+      <p class="text-xl" id="clicker-output"></p>
       <button class="p-8" type="button" onclick="clicked()">Click Me!</button>
  
       <button class="p-8" type="button" onclick="reset()">Reset Me!</button>
+
+      <hr>
+      <p class="text-xl">Store:</p>
+      <div class="flex pb-8">
+        <div class="mx-auto">
+          <p class="text-sm">Auto level:</p>
+          <p class="text-sm" id="auto-level"></p>
+
+          <p class="text-sm">Auto price:</p>
+          <p class="text-sm" id="auto-price"></p>
+          
+          <button type="button" onclick="auto()">Buy Auto clicker</button>
+        </div>
+        <div class="mx-auto">
+          <p class="text-sm">Bonus level:</p>
+          <p class="text-sm" id="bonus-level"></p>
+
+          <p class="text-sm">Bonus price:</p>
+          <p class="text-sm" id="bonus-price"></p>
+          
+          <button type="button" onclick="bonus()">Buy Bonus clicks</button>
+        </div>
+      </div>
+      <hr>
+      <p class="text-xl">Bank of clicks:</p>
+      <div class="flex pb-8">
+        <div class="mx-auto">
+          <p class="text-sm">Loan offer(20% interest):</p>
+          <!--loan offer should be 50x bonus level-->
+          <p class="text-sm" id="loan-offer"></p>
+          <p class="text-sm">current debt:</p>
+          <p class="text-sm" id="debt"></p>
+
+          <p class="text-xs">(autoclicks are cancelled while in debt)</p>
+
+          <button class="pb-2" type="button" onclick="loan()">Take out a loan</button>
+          <hr >
+          <button class="pt-2" type="button" onclick="debt()">Pay off debt</button>
+        </div>
+        <div class="mx-auto">
+          <p class="text-sm">Feature not added yet</p>
+        </div>
+    
       
       <script src="./clickerminigame.js"></script>
     </div>
