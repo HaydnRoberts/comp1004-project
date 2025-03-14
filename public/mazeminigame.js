@@ -1,6 +1,6 @@
 const maze_output = document.querySelector('#maze-game-output');
-
 let score = 0;
+let maze = new Array(17).fill(null).map(() => new Array(17).fill(0));
 
 function getRandomInt(max) {
 	return Math.floor(Math.random() * max);
@@ -9,7 +9,7 @@ function getRandomInt(max) {
 // defines a 17x17 2D maze array
 
 function initialiseMaze(){
-	let maze = new Array(17).fill(null).map(() => new Array(17).fill(0));
+	
     for (let i = 0; i < 17; i++) {
         for (let j = 0; j < 17; j++) {
             maze[i][j] = 1;
@@ -17,15 +17,6 @@ function initialiseMaze(){
     }
 
 }
-initialiseMaze();
-/*
-for (let i = 0; i < 17; i++) {
-    for (let j = 0; j < 17; j++) {
-        if (i == 0 || i == 16 || j == 0 || j == 16) {
-            maze[i][j] = 1;
-        }
-    }
-}*/
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -33,7 +24,6 @@ function shuffleArray(array) {
         [array[i], array[j]] = [array[j], array[i]]; // Proper swap
     }
 }
-
 
 function carveMaze(x, y){
 	let dir = [0, 1, 2, 3];
@@ -66,14 +56,8 @@ function carveMaze(x, y){
 	}
 }
 
-
-carveMaze(1,1);
-maze[1][1]=2; // starting point
-maze[16][15]=3 // end point
-
-
 function renderMaze(){
-	let mazeValue = "<pre style='font-size: 18px; line-height: 1; letter-spacing: 2px;'>";
+	let mazeValue = "<pre style='font-size: 18px; line-height: 1;'>";
 	mazeValue += "Score: ";
 	mazeValue += score;
 	mazeValue += "<br>";
@@ -95,12 +79,22 @@ function renderMaze(){
 	}
 	mazeValue += "</pre>";
 	if (maze[16][15] === 2){
-		mazeValue += "<br> YOU WIN!"
+		mazeValue += "<br> YOU WIN!";
+	
 	}
 	maze_output.innerHTML = mazeValue;
 	
 }
-renderMaze();
+
+function newMaze(){
+	maze = new Array(17).fill(null).map(() => new Array(17).fill(0));
+	initialiseMaze();
+	carveMaze(1,1);
+	maze[1][1]=2; // starting point
+	maze[16][15]=3 // end point
+	renderMaze();
+}
+newMaze();
 
 
 function upMaze(){
@@ -156,6 +150,7 @@ function downMaze(){
 				} else if (maze[i+1][j] === 3){
 					maze[i][j] = 0;
 					maze[i+1][j]=2;
+					score += 1;
 				}
 				renderMaze();
 				return;
