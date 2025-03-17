@@ -108,9 +108,45 @@
     <div id="game-3-block" class="hidden">
       <p class="p-8 text-xl">Turn based combat game</p>
 
-      <div class="hidden" id="game-3-start">
-        <!-- Select your monster here -->
-
+      <div class="hidden" id="game-3-type-choice">
+        <!-- Select your monster type here -->
+        <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="chooseType(0)">
+          <img id="player-image" src="/comp1004-PROJECT/public/Images/RedWyvern320px.webp" class="w-full h-auto" />
+          Fire
+        </button>
+        <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="chooseType(1)">
+          <img id="player-image" src="/comp1004-PROJECT/public/Images/placeholder-200x200.jpg" class="w-full h-auto" />
+          Ice
+        </button>
+        <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="chooseType(2)">
+          <img id="player-image" src="/comp1004-Project/public/Images/GreenWyvern320px.webp" class="w-full h-auto" />
+          Healer
+        </button>
+        <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="chooseType(3)">
+          <img id="player-image" src="/comp1004-PROJECT/public/Images/VenomDragon320px.webp" class="w-full h-auto" />
+          Poison
+        </button>
+        <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="chooseType(4)">
+          <img id="player-image" src="/comp1004-PROJECT/public/Images/placeholder-200x200.jpg" class="w-full h-auto" />
+          Ground
+        </button>
+        <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="chooseType(5)">
+          <img id="player-image" src="/comp1004-PROJECT/public/Images/placeholder-200x200.jpg" class="w-full h-auto" />
+          Flying
+        </button>
+        <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="chooseType(6)">
+          <img id="player-image" src="/comp1004-PROJECT/public/Images/placeholder-200x200.jpg" class="w-full h-auto" />
+          Steel
+        </button>
+        <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="chooseType(7)">
+          <img id="player-image" src="/comp1004-PROJECT/public/Images/placeholder-200x200.jpg" class="w-full h-auto" />
+          Electric
+        </button>
+      </div>
+      <div class="hidden" id="game-3-subclass-choice">
+        <!-- Select your monster subclass here -->
+        <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="subclass(0)" id="subclass0"></button>
+        <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="subclass(1)" id="subclass1"></button>
       </div>
 
         <!-- Show this during combat encounters -->
@@ -127,7 +163,7 @@
                 <p class="text-sm flex-1 text-left" id="player-item">Item</p> <!-- Item -->
               </div>
               <p class="text-center text-xs" id="player-health">Health bar</p> <!-- Health bar -->
-              <p class="text-center text-xs" id="player-status">Status effects</p> <!-- Status effects -->
+              <p class="text-center text-xs" id="player-status">Status effects:</p> <!-- Status effects -->
               <img id="player-image" src="/comp1004-PROJECT/public/Images/placeholder-200x200.jpg" class="w-full h-auto" /> <!-- Monster image -->
             </div>
         
@@ -143,21 +179,22 @@
                 <p class="text-sm flex-1 text-left" id="enemy-item">Item</p> <!-- Item -->
               </div>
               <p class="text-center text-xs" id="enemy-health">Health bar</p> <!-- Health bar -->
-              <p class="text-center text-xs" id="enemy-status">Status effects</p> <!-- Status effects -->
+              <p class="text-center text-xs" id="enemy-status">Status effects:</p> <!-- Status effects -->
               <img id="enemy-image" src="/comp1004-PROJECT/public/Images/placeholder-200x200.jpg" class="w-full h-auto" /> <!-- Monster image -->
             </div>
           </div>
         </div>
         <div class="flex">
-          <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="">Attack</button>
-          <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="">Subclass Move</button>
+          <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="PlayerAttack()">Attack</button>
+          <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="PlayerSubclassMove()">Subclass Move</button>
         </div>
         <div class="flex">
-          <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="">Item Move</button>
-          <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="">Capture</button>
+          <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="PlayerItemMove()">Item Move</button>
+          <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="Capture()">Capture</button>
         </div>
-      </div>
+      </div>  
     </div>
+    <script src="./turnbasedgame.js"></script>
   </div>
   <script src="./gameselector.js"></script>
 
