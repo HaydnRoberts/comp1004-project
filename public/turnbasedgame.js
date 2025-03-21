@@ -2,7 +2,7 @@ const playerTypeGUI = document.querySelector('#player-type');
 const playerSubclassGUI = document.querySelector('#player-subclass');
 const playerItemGUI = document.querySelector('#player-item');
 const playerHealthGUI = document.querySelector('#player-health');
-const playerimageGUI = document.querySelector('#player-image');
+const playerImageGUI = document.querySelector('#player-image');
 
 const enemyTypeGUI = document.querySelector('#enemy-type');
 const enemySubclassGUI = document.querySelector('#enemy-subclass');
@@ -35,7 +35,7 @@ function HealthBar(progression, end, length){
 	return progressBar;
 }
 
-let Types = ["Fire", "Ice", "Healer", "Poison", "Ground", "Flying", "Steel", "Electric"];
+let Types = ["Fire", "Ice", "Healer", "Poison", "Ground", "Flying", "Metal", "Electric"];
 let subclasses = ["Flame", "Molten", "Freeze", "Slow", "Medic", "Vampiric", "Venom", "Viral", "Sandstorm", "Flora", "Breeze", "Clense", "Armour", "Blade", "Grounded", "Charge"];
 // items are the equivelant of a craftable second subclass
 // Type 1 can access subclass 1 and 2, Type 2 can access subclass 3 and 3, ect
@@ -49,6 +49,8 @@ function chooseType(value){
 	subclassChoice0.innerHTML = subclasses[tmp*2];
 	subclassChoice1.innerHTML = subclasses[(tmp*2)+1];
 	
+	battleIcon(value ,"player");
+	
 	typeGUI.classList.add('hidden');
 	subclassGui.classList.remove('hidden');
 }
@@ -59,6 +61,7 @@ function subclass(value){
 	playerSubclassGUI.innerHTML = playerMonster[1];
 	playerItemGUI.innerHTML = "no item";
 	playerHealthGUI.innerHTML = HealthBar(100,100,50);
+	
 
 	subclassGui.classList.add('hidden');
 	combatGUI.classList.remove('hidden');
@@ -66,7 +69,44 @@ function subclass(value){
 
 
 
+function battleIcon(typeID, player){
+	let target = "";
+	let tmpType = "";
 
+	tmpType = Types[typeID];
+	if(tmpType == "Fire"){
+		target = "RedWyvern320px.webp";
+	} else if(tmpType == "Ice"){
+		target = "IceDragon320px.webp";
+	} else if (tmpType == "Healer"){
+		target = "GreenWyvern320px.webp";
+	} else if (tmpType == "Poison"){
+		target = "VenomDragon320px.webp";
+	} else if(tmpType == "Ground"){
+		target = "GroundWorm320px.webp";
+	} else if(tmpType == "Flying"){
+		target = "FlyingMonster320px.webp";
+	}else if (tmpType == "Metal"){
+		target = "EvilFrog320px.webp";
+	} else if (tmpType == "Electric"){
+		target = "ElectricDog320px.webp";
+	} else {
+		console.warn("Unknown type:", tmpType);
+		target = "placeholder-200x200.jpg"; // Set a default fallback image
+	}
+	
+
+
+	if(player=="enemy"){
+		enemyImageGUI.src = `/comp1004-PROJECT/public/Images/${target}`;
+
+	} else{
+		playerImageGUI.src = `/comp1004-PROJECT/public/Images/${target}`;
+
+	}
+
+
+}
 
 
 
