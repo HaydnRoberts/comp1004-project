@@ -128,7 +128,81 @@ function generateRandomOpponent(){
 	enemyItemGUI.innerHTML = "no item";
 }
 
+// add the effects function here
+function subclassEffects(subclass, user, target){
+	if (subclass == "Flame"){
+		//target takes minor damage every turn and takes slightly more damage - fire status
+	} else if (subclass == "Molten"){
+		// user deals chip damge whenever attacked - molten scales status
+	} else if (subclass == "Freeze"){
+		// user attacks target for reduced damage and has a 1/2 chance to skip the target's next turn with the frozen status
+	} else if (subclass == "Slow"){
+		// skips the targets next turn, however, only attacks can be used against it during that turn - slow status
+	} else if (subclass == "Medic"){
+		// user re-gains 30 health
+	} else if (subclass == "Vampiric"){
+		// all of user's future attacks have lifesteal - re-gain health on attack, based on percentage of attack damage
+	} else if (subclass == "Poison"){
+		// target takes damage every turn - poisoned status
+	} else if (subclass == "Viral"){
+		// user takes damage every turn - poisoned status, but user also gains a major damage boost - major-dmg-up status
+	} else if (subclass == "Sandstorm"){
+		//target takes minor damage every turn - sandstorm status, user takes slightly less damage - minor-def-up status
+	} else if (subclass == "Flora"){
+		// target loses health, next turn user gains this health - flora status
+	} else if (subclass == "Breeze"){
+		// target and user swap all status effects
+	} else if (subclass == "Clense"){
+		// target loses all positive status effects, user loses all negative status effects
+	} else if (subclass == "Armour"){
+		// user takes less damage - def-up
+	} else if (subclass == "Blade"){
+		// user deals more damage - dmg-up
+	} else if (subclass == "Charge"){
+		// user gains major-dmg-up for two turns 
+	} else if (subclass == "Ground"){
+		// user damages target once for each status effect target has, then remove those status effects
+	}
+}
 
+function playerMove(move){
+	if (playerItemGUI.innerHTML != "no item" && move != "item"){
+		let baseDamage = 20;
+		// go through and apply effects
+		if (move == "attack"){
+			enemyHealth -= baseDamage;
+		} else if (move == "subclass"){
+			subclassEffects(playerSubclassGUI.innerHTML, "Player", "Enemy")
+		} else if (move == "item"){
+			subclassEffects(playerItemGUI.innerHTML, "Player", "Enemy")
+		}
+		// rand 1-3(1-2 if no item) for what the enemy will do
+		// more advanced logic may be added later but is outside current sprint scope
+		baseDamage = 20;
+		let enemyMove = 0;
+		if (enemyItemGUI.innerHTML == "no item"){
+			enemyMove = getRandomInt(2);
+		} else {
+			enemyMove = getRandomInt(3);
+		}
+		if (enemyMove == 0){
+			playerHealth -= baseDamage;
+		} else if (enemyMove == 1){
+			subclassEffects(enemySubclassGUI.innerHTML, "Enemy", "Player")
+		} else if (enemyMove == 2){
+			subclassEffects(enemyItemGUI.innerHTML, "Enemy", "Player")
+		}
+
+		// check if either monster's health is below 0
+		// if it isnt, show health and end turn
+		// if user is, show stat screen and ask them to play again or load their save
+		// if enemy is, enemy drops ([type] core), this can be turned into an item fo either of that type's subclasses 
+		// e.g. Ice core can be turned into Freeze Item or Slow Item, letting the player's monster use that ability
+		
+		enemyHealthGUI.innerHTML = HealthBar(enemyHealth,100,50);
+		playerHealthGUI.innerHTML = HealthBar(playerHealth,100,50);
+	}
+}
 
 
 
