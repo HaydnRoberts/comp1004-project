@@ -16,6 +16,9 @@ const subclassGui = document.querySelector('#game-3-subclass-choice')
 const subclassChoice0 = document.querySelector('#subclass0');
 const subclassChoice1 = document.querySelector('#subclass1');
 
+const playerHealth = 100;
+const enemyHealth = 100;
+
 function HealthBar(progression, end, length){
 	let progressBar = "";
 	let fullBar = '|';
@@ -60,8 +63,9 @@ function subclass(value){
 	playerTypeGUI.innerHTML = playerMonster[0];
 	playerSubclassGUI.innerHTML = playerMonster[1];
 	playerItemGUI.innerHTML = "no item";
-	playerHealthGUI.innerHTML = HealthBar(100,100,50);
+	playerHealthGUI.innerHTML = HealthBar(playerHealth,100,50);
 	
+	generateRandomOpponent();
 
 	subclassGui.classList.add('hidden');
 	combatGUI.classList.remove('hidden');
@@ -108,8 +112,21 @@ function battleIcon(typeID, player){
 
 }
 
+function generateRandomOpponent(){
+	let tmp = getRandomInt(8);
+	enemyTypeGUI.innerHTML = Types[tmp];
 
-
+	// subclass modifier is either 0 or 1
+	let subclassModifier= getRandomInt(2);
+	// this equation mathches the type to the two valid subclasses
+	// e.g. type 0 should match to 0 and 1: type 0, (0+1)*2=2, 2-1=1, 2-2=0
+	// and type 3 should match to 6 and 7: type 3 (3+1)*2=8, 8-1=7, 8-2=6
+	subclassModifier = ((tmp+1)*2)-(1+subclassModifier)
+	enemySubclassGUI.innerHTML = subclasses[subclassModifier];
+	enemyHealthGUI.innerHTML = HealthBar(enemyHealth,100,50);
+	battleIcon(tmp, "enemy")
+	enemyItemGUI.innerHTML = "no item";
+}
 
 
 
