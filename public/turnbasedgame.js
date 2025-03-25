@@ -58,6 +58,7 @@ function chooseType(value){
 	subclassChoice1.innerHTML = subclasses[(tmp*2)+1];
 	
 	battleIcon(value ,"player");
+	playerImageGUI.style.transform = playerImageGUI.style.transform === 'scaleX(-1)' ? 'scaleX(1)' : 'scaleX(-1)';
 	
 	typeGUI.classList.add('hidden');
 	subclassGui.classList.remove('hidden');
@@ -108,10 +109,8 @@ function battleIcon(typeID, player){
 
 	if(player=="enemy"){
 		enemyImageGUI.src = `/comp1004-PROJECT/public/Images/${target}`;
-
 	} else{
 		playerImageGUI.src = `/comp1004-PROJECT/public/Images/${target}`;
-
 	}
 
 
@@ -235,42 +234,46 @@ function subclassEffects(subclass, user, baseDamage){
 }
 
 function playerMove(move){
-	if (playerItemGUI.innerHTML != "no item" && move != "item"){
-		let playerBaseDamage = 20;
-		// go through and apply effects
-		if (move == "attack"){
-			enemyHealth -= baseDamage;
-		} else if (move == "subclass"){
-			subclassEffects(playerSubclassGUI.innerHTML, "Player", playerBaseDamage);
-		} else if (move == "item"){
-			subclassEffects(playerItemGUI.innerHTML, "Player", playerBaseDamage);
-		}
-		// rand 1-3(1-2 if no item) for what the enemy will do
-		// more advanced logic may be added later but is outside current sprint scope
-		let enemyBaseDamage = 20;
-		let enemyMove = 0;
-		if (enemyItemGUI.innerHTML == "no item"){
-			enemyMove = getRandomInt(2);
-		} else {
-			enemyMove = getRandomInt(3);
-		}
-		if (enemyMove == 0){
-			playerHealth -= baseDamage;
-		} else if (enemyMove == 1){
-			subclassEffects(enemySubclassGUI.innerHTML, "Enemy", enemyBaseDamage);
-		} else if (enemyMove == 2){
-			subclassEffects(enemyItemGUI.innerHTML, "Enemy", enemyBaseDamage);
-		}
 
-		// check if either monster's health is below 0
-		// if it isnt, show health and end turn
-		// if user is, show stat screen and ask them to play again or load their save
-		// if enemy is, enemy drops ([type] core), this can be turned into an item fo either of that type's subclasses 
-		// e.g. Ice core can be turned into Freeze Item or Slow Item, letting the player's monster use that ability
-		
-		enemyHealthGUI.innerHTML = HealthBar(enemyHealth,100,50);
-		playerHealthGUI.innerHTML = HealthBar(playerHealth,100,50);
+	if (move === "item") {
+        if (playerItemGUI.innerHTML == "no item") {
+            alert("You do not have an item");
+        }
+    }
+	let playerBaseDamage = 20;
+	// go through and apply effects
+	if (move == "attack"){
+		enemyHealth -= playerBaseDamage;
+	} else if (move == "subclass"){
+		subclassEffects(playerSubclassGUI.innerHTML, "Player", playerBaseDamage);
+	} else if (move == "item"){
+		subclassEffects(playerItemGUI.innerHTML, "Player", playerBaseDamage);
 	}
+	// rand 1-3(1-2 if no item) for what the enemy will do
+	// more advanced logic may be added later but is outside current sprint scope
+	let enemyBaseDamage = 20;
+	let enemyMove = 0;
+	if (enemyItemGUI.innerHTML == "no item"){
+		enemyMove = getRandomInt(2);
+	} else {
+		enemyMove = getRandomInt(3);
+	}
+	if (enemyMove == 0){
+		playerHealth -= enemyBaseDamage;
+	} else if (enemyMove == 1){
+		subclassEffects(enemySubclassGUI.innerHTML, "Enemy", enemyBaseDamage);
+	} else if (enemyMove == 2){
+		subclassEffects(enemyItemGUI.innerHTML, "Enemy", enemyBaseDamage);
+	}
+
+	// check if either monster's health is below 0
+	// if it isnt, show health and end turn
+	// if user is, show stat screen and ask them to play again or load their save
+	// if enemy is, enemy drops ([type] core), this can be turned into an item fo either of that type's subclasses 
+	// e.g. Ice core can be turned into Freeze Item or Slow Item, letting the player's monster use that ability
+	
+	enemyHealthGUI.innerHTML = HealthBar(enemyHealth,100,50);
+	playerHealthGUI.innerHTML = HealthBar(playerHealth,100,50);
 }
 
 
