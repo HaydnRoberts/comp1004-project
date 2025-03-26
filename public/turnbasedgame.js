@@ -17,6 +17,7 @@ const typeGUI = document.querySelector('#game-3-type-choice');
 const subclassGui = document.querySelector('#game-3-subclass-choice')
 const subclassChoice0 = document.querySelector('#subclass0');
 const subclassChoice1 = document.querySelector('#subclass1');
+const inventoryGUI = document.querySelector('#game-3-inventory')
 
 // this is a box to tell the user what just happened, as without this, the game would be very confusing
 const whatJustHappenedBox = document.querySelector('#what-just-happened-box');
@@ -49,7 +50,8 @@ let subclasses = ["Flame", "Molten", "Freeze", "Slow", "Medic", "Vampiric", "Ven
 let playerHealth = 100;
 let enemyHealth = 100;
 
-let playerMonster = ['','','']; // 0 is type, 1 is subclass, 2 is item
+let playerMonster = ['','','']; // 0 is type, 1 is subclass, 2 is chosen item
+let playerItemList = [];
 let playerStatusList = [];
 let enemyStatusList = [];
 let tmp = 0;
@@ -554,7 +556,12 @@ function playerMove(move){
 	// if enemy is, enemy drops ([type] core), this can be turned into an item fo either of that type's subclasses 
 	// e.g. Ice core can be turned into Freeze Item or Slow Item, letting the player's monster use that ability
 
+	if(playerHealth < 0){
+		
+	}
+	if(enemyHealth < 0){
 
+	}
 
 	
 	enemyHealthGUI.innerHTML = HealthBar(enemyHealth,100,50);
@@ -563,11 +570,15 @@ function playerMove(move){
 	enemyStatusGUI.innerHTML = "Status effects: " + (enemyStatusList.length ? enemyStatusList.join(", ") : "None");
 }
 
-function inventory(){
-	// this function should hide combatGUI and show inventoryGUI which contains all the items the player has 
-	// there should be a button in the inventory to hide inventoryGUI and show combatGUI
+function showInventory(){
+	combatGUI.classList.add('hidden');
+	inventoryGUI.classList.remove('hidden');
 }
 
+function closeInventory(){
+	combatGUI.classList.remove('hidden');
+	inventoryGUI.classList.add('hidden');
+}
 
 
 
@@ -585,3 +596,4 @@ function whatJustHappened(newString) {
 typeGUI.classList.remove('hidden');
 subclassGui.classList.add('hidden');
 combatGUI.classList.add('hidden');
+inventoryGUI.classList.add('hidden');

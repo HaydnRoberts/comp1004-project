@@ -205,7 +205,7 @@
   </div>
   <div class="flex z-20">
     <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="playerMove('item')">Item Move</button>
-    <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="inventory()">Inventory</button>
+    <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="showInventory()">Inventory</button>
   </div>
 </div>  
 
@@ -293,7 +293,75 @@
   }
 </style>
 
-
+  <!-- Inventory screen for game 3 -->
+  <div id="game-3-inventory">
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+      <img src="/comp1004-PROJECT/public/Images/redSteak320px.png" class="w-full h-auto" />
+      Flame Item
+    </button>
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+      <img src="/comp1004-PROJECT/public/Images/redSteak320px.png" class="w-full h-auto" />
+      Molten Item
+    </button>
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+      <img src="/comp1004-PROJECT/public/Images/greenSteak320px.png" class="w-full h-auto" />
+      Medic Item
+    </button>
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+      <img src="/comp1004-PROJECT/public/Images/greenSteak320px.png" class="w-full h-auto" />
+      Vampiric Item
+    </button>
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+      <img src="/comp1004-PROJECT/public/Images/greySteak320px.png" class="w-full h-auto" />
+      Charge Item
+    </button>
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+      <img src="/comp1004-PROJECT/public/Images/greySteak320px.png" class="w-full h-auto" />
+      Grounded Item
+    </button>
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+      <img src="/comp1004-PROJECT/public/Images/metalFrogSkull320px.png" class="w-full h-auto" />
+      Blade Item
+    </button>
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+      <img src="/comp1004-PROJECT/public/Images/metalFrogSkull320px.png" class="w-full h-auto" />
+      Armour Item
+    </button>
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+      <img src="/comp1004-PROJECT/public/Images/spineCollection320px.png" class="w-full h-auto" />
+      Sandstorm Item
+    </button>
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+      <img src="/comp1004-PROJECT/public/Images/spineCollection320px.png" class="w-full h-auto" />
+      Flora Item
+    </button>
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+      <img src="/comp1004-PROJECT/public/Images/wing320px.png" class="w-full h-auto" />
+      Breeze Item
+    </button>
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+      <img src="/comp1004-PROJECT/public/Images/wing320px.png" class="w-full h-auto" />
+      Clense Item
+    </button>
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+      <img src="/comp1004-PROJECT/public/Images/poisonEye320px.png" class="w-full h-auto" />
+      Venom Item
+    </button>
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+      <img src="/comp1004-PROJECT/public/Images/poisonEye320px.png" class="w-full h-auto" />
+      Viral Item
+    </button>
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+      <img src="/comp1004-PROJECT/public/Images/iceEye320px.png" class="w-full h-auto" />
+      Freeze Item
+    </button>
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+      <img src="/comp1004-PROJECT/public/Images/iceEye320px.png" class="w-full h-auto" />
+      Slow Item
+    </button>
+    <hr>
+    <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="closeInventory()">Close Inventory</button>
+  </div>
     <script src="./turnbasedgame.js"></script>
   </div>
   <script src="./gameselector.js"></script>
