@@ -149,51 +149,151 @@
         <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="subclass(1)" id="subclass1"></button>
       </div>
 
-        <!-- Show this during combat encounters -->
-      <div class="hidden" id="game-3-combat">
-        <div class="bg-sky-200 flex justify-center items-center p-4 pt-16 rounded-lg">
-          <!-- Combat visuals (horizontal stack) -->
-          <div class="flex justify-between w-full max-w-4xl">
-            <!-- Player's monster (vertical stack) -->
-            <div class="flex flex-col items-center w-1/3">
-              <p class="text-center text-md" id="player-type">Type</p> <!-- Type -->
-              <div class="flex items-center w-full">
-                <p class="text-sm flex-1 text-right" id="player-subclass">Subclass</p> <!-- Subclass -->
-                <p class="text-sm mx-2">❖</p> <!-- Centered Divider -->
-                <p class="text-sm flex-1 text-left" id="player-item">Item</p> <!-- Item -->
-              </div>
-              <p class="text-center text-xs" id="player-health">Health bar</p> <!-- Health bar -->
-              <p class="text-center text-xs" id="player-status">Status effects:</p> <!-- Status effects -->
-              <img id="player-image" src="/comp1004-PROJECT/public/Images/placeholder-200x200.jpg" class="w-full h-auto" /> <!-- Monster image -->
-            </div>
-        
-            <!-- Spacing between monsters -->
-            <div class="w-1/3"></div>
-        
-            <!-- Enemy's monster (vertical stack) -->
-            <div class="flex flex-col items-center w-1/3">
-              <p class="text-center text-md" id="enemy-type">Type</p> <!-- Type -->
-              <div class="flex items-center w-full">
-                <p class="text-sm flex-1 text-right" id="enemy-subclass">Subclass</p> <!-- Subclass -->
-                <p class="text-sm mx-2">❖</p> <!-- Centered Divider -->
-                <p class="text-sm flex-1 text-left" id="enemy-item">Item</p> <!-- Item -->
-              </div>
-              <p class="text-center text-xs" id="enemy-health">Health bar</p> <!-- Health bar -->
-              <p class="text-center text-xs" id="enemy-status">Status effects:</p> <!-- Status effects -->
-              <img id="enemy-image" src="/comp1004-PROJECT/public/Images/placeholder-200x200.jpg" class="w-full h-auto" /> <!-- Monster image -->
-            </div>
-          </div>
-        </div>
-        <div class="flex">
-          <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="playerMove('attack')">Attack</button>
-          <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="playerMove('subclass')">Subclass Move</button>
-        </div>
-        <div class="flex">
-          <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="playerMove('item')">Item Move</button>
-          <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="inventory()">Inventory</button>
-        </div>
-      </div>  
+<!-- Show this during combat encounters -->
+<div class="hidden" id="game-3-combat">
+  <div class="relative flex justify-center items-center px-8 pt-16 rounded-lg shadow-lg">
+    <!-- Background Image, free trial adobe standard licence image-->
+    <div class="absolute inset-0 bg-cover bg-center z-0" style="background-image: url('/comp1004-PROJECT/public/Images/AdobeStock_538009699_Preview.jpeg');"></div>
+
+    <!-- Fireflies Animation -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-10">
+      <div class="absolute w-2 h-2 bg-yellow-400 rounded-full opacity-75 animate-firefly delay-0" style="top: 10%; left: 20%;"></div>
+      <div class="absolute w-2 h-2 bg-yellow-400 rounded-full opacity-75 animate-firefly-2 delay-1000" style="top: 64%; left: 62%;"></div>
+      <div class="absolute w-2 h-2 bg-yellow-400 rounded-full opacity-75 animate-firefly-3 delay-2000" style="top: 53%; left: 10%;"></div>
+      <div class="absolute w-2 h-2 bg-yellow-400 rounded-full opacity-75 animate-firefly-4 delay-3000" style="top: 28%; left: 43%;"></div>
+      <div class="absolute w-2 h-2 bg-yellow-400 rounded-full opacity-75 animate-firefly-5 delay-4000" style="top: 56%; left: 65%;"></div>
     </div>
+
+    <!-- Combat visuals (horizontal stack) -->
+    <div class="flex justify-between w-full max-w-4xl z-20">
+      <!-- Player's monster (vertical stack) -->
+      <div class="flex flex-col items-center w-1/3">
+        <p class="text-center text-md outlined-text" id="player-type">Type</p> <!-- Type -->
+        <div class="flex items-center w-full">
+          <p class="text-sm flex-1 text-right outlined-text" id="player-subclass">Subclass</p> <!-- Subclass -->
+          <p class="text-sm mx-2 text-white">❖</p> <!-- Centered Divider -->
+          <p class="text-sm flex-1 text-left outlined-text" id="player-item">Item</p> <!-- Item -->
+        </div>
+        <p class="text-center text-xs outlined-text" id="player-health">Health bar</p> <!-- Health bar -->
+        <p class="text-center text-xs outlined-text" id="player-status">Status effects: None</p> <!-- Status effects -->
+        <img id="player-image" src="" class="w-full h-auto animate-breathe-flipped" /> <!-- Monster image -->
+      </div>
+  
+      <!-- Spacing between monsters -->
+      <div class="w-1/3"></div>
+  
+      <!-- Enemy's monster (vertical stack) -->
+      <div class="flex flex-col items-center w-1/3">
+        <p class="text-center text-md outlined-text" id="enemy-type">Type</p> <!-- Type -->
+        <div class="flex items-center w-full">
+          <p class="text-sm flex-1 text-right outlined-text" id="enemy-subclass">Subclass</p> <!-- Subclass -->
+          <p class="text-sm mx-2 text-white">❖</p> <!-- Centered Divider -->
+          <p class="text-sm flex-1 text-left outlined-text" id="enemy-item">Item</p> <!-- Item -->
+        </div>
+        <p class="text-center text-xs outlined-text" id="enemy-health">Health bar</p> <!-- Health bar -->
+        <p class="text-center text-xs outlined-text" id="enemy-status">Status effects: None</p> <!-- Status effects -->
+        <img id="enemy-image" src="" class="w-full h-auto animate-breathe" /> <!-- Monster image -->
+      </div>
+    </div>
+  </div>
+
+  <!-- a box to tell the user what just happened -->
+  <p class="border-2 px-4 border-solid text-xs text-gray-800 z-20 bg-opacity-80 bg-white rounded-lg p-4" id="what-just-happened-box"></p>
+  <div class="flex z-20">
+    <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="playerMove('attack')">Attack</button>
+    <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="playerMove('subclass')">Subclass Move</button>
+  </div>
+  <div class="flex z-20">
+    <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="playerMove('item')">Item Move</button>
+    <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="inventory()">Inventory</button>
+  </div>
+</div>  
+
+<!-- I found some online guides for animations and discovered that I could use this for a simple firefly effect -->
+<style>
+  .outlined-text {
+    color: white;
+    text-shadow: 
+      1px 1px 2px black, 
+      -1px -1px 2px black, 
+      1px -1px 2px black, 
+      -1px 1px 2px black;
+  }  
+  @keyframes firefly {
+    0% { transform: translateY(-800px) translateX(400px); opacity: 0.2; }
+    25% { transform: translateY(300px) translateX(100px); opacity: 1; }
+    50% { transform: translateY(100px) translateX(-120px); opacity: 0.7; }
+    75% { transform: translateY(-20px) translateX(250px); opacity: 1; }
+    100% { transform: translateY(120px) translateX(20px); opacity: 0.4; }
+  }
+
+  @keyframes firefly-2 {
+    0% { transform: translateY(600px) translateX(-100px); opacity: 0.6; }
+    25% { transform: translateY(110px) translateX(-40px); opacity: 0.2; }
+    50% { transform: translateY(-300px) translateX(-200px); opacity: 1; }
+    75% { transform: translateY(110px) translateX(-40px); opacity: 0.3; }
+    100% { transform: translateY(100px) translateX(600px); opacity: 0.6; }
+  }
+
+  @keyframes firefly-3 {
+    0% { transform: translateY(100px) translateX(200px); opacity: 0.6; }
+    25% { transform: translateY(110px) translateX(-40px); opacity: 0.6; }
+    50% { transform: translateY(200px) translateX(150px); opacity: 1; }
+    60% { transform: translateY(10px) translateX(-40px); opacity: 0.3; }
+    100% { transform: translateY(-120px) translateX(800px); opacity: 0.6; }
+  }
+
+  @keyframes firefly-4 {
+    0% { transform: translateY(120px) translateX(200px); opacity: 0.6; }
+    33% { transform: translateY(-20px) translateX(250px); opacity: 1; }
+    66% { transform: translateY(300px) translateX(100px); opacity: 0.4; }
+    100% { transform: translateY(110px) translateX(-40px); opacity: 0.6; }
+  }
+
+  @keyframes firefly-5 {
+    0% { transform: translateY(400px) translateX(-600px); opacity: 0.6; }
+    50% { transform: translateY(300px) translateX(100px); opacity: 1; }
+    100% { transform: translateY(-120px) translateX(800px); opacity: 0.6; }
+  }
+
+  .animate-firefly {
+    animation: firefly 60s infinite ease-in-out alternate;
+    position: absolute;
+  }
+  .animate-firefly-2 {
+    animation: firefly-2 60s infinite ease-in-out alternate;
+    position: absolute;
+  }
+  .animate-firefly-3 {
+    animation: firefly-3 60s infinite ease-in-out alternate;
+    position: absolute;
+  }
+  .animate-firefly-4 {
+    animation: firefly-4 60s infinite ease-in-out alternate;
+    position: absolute;
+  }
+  .animate-firefly-5 {
+    animation: firefly-5 60s infinite ease-in-out alternate;
+    position: absolute;
+  }
+
+  .animate-breathe {
+    animation: breathe 10s infinite ease-in-out alternate;
+  }
+  @keyframes breathe {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+  }
+  .animate-breathe-flipped {
+    animation: breathe-flipped 15s infinite ease-in-out alternate;
+  }
+  @keyframes breathe-flipped {
+    0% { transform: scale(1) scaleX(-1); }
+    100% { transform: scale(1.1) scaleX(-1); }
+  }
+</style>
+
+
     <script src="./turnbasedgame.js"></script>
   </div>
   <script src="./gameselector.js"></script>
