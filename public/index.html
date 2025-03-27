@@ -107,6 +107,7 @@
 
     <div id="game-3-block" class="hidden">
       <p class="p-8 text-xl">Turn based combat game</p>
+      <p class="text-lg" id="scoreBox"></p>
 
       <div class="hidden" id="game-3-type-choice">
         <!-- Select your monster type here -->
@@ -199,17 +200,28 @@
 
   <!-- a box to tell the user what just happened -->
   <p class="border-2 px-4 border-solid text-xs text-gray-800 z-20 bg-opacity-80 bg-white rounded-lg p-4" id="what-just-happened-box"></p>
-  <div class="flex z-20">
-    <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="playerMove('attack')">Attack</button>
-    <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="playerMove('subclass')">Subclass Move</button>
+  <div id="game-3-combat-buttons">
+    <div class="flex z-20">
+      <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="playerMove('attack')">Attack</button>
+      <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="playerMove('subclass')">Subclass Move</button>
+    </div>
+    <div class="flex z-20">
+      <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="playerMove('item')">Item Move</button>
+      <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button">Inventory 🔒</button>
+    </div>
   </div>
-  <div class="flex z-20">
-    <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="playerMove('item')">Item Move</button>
+  <div id="game-3-loss-buttons">
+    <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="retry()">Retry?</button>
+  </div>
+  <div id="game-3-win-buttons">
+    <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="nextEnemy()">Face a new Monster</button>
+    <!-- The inventory cannot be used during a fight (Cause that would make the game too easy) -->
     <button class="p-2 m-2 rounded-lg border-2 border-dashed border-black w-1/3 mx-auto" type="button" onclick="showInventory()">Inventory</button>
   </div>
 </div>  
 
-<!-- I found some online guides for animations and discovered that I could use this for a simple firefly effect -->
+<!-- I found some online guides for animations and discovered that I could use this for a simple firefly effect that makes the game so much prettier -->
+ <!-- each firefly essentially has random movements as I just used any random numbers to give them unpredictable flight patterns -->
 <style>
   .outlined-text {
     color: white;
@@ -278,84 +290,85 @@
   }
 
   .animate-breathe {
-    animation: breathe 10s infinite ease-in-out alternate;
+    animation: breathe 5s infinite ease-in-out alternate;
   }
   @keyframes breathe {
     0% { transform: scale(1); }
     100% { transform: scale(1.05); }
   }
   .animate-breathe-flipped {
-    animation: breathe-flipped 15s infinite ease-in-out alternate;
+    animation: breathe-flipped 4s infinite ease-in-out alternate;
   }
   @keyframes breathe-flipped {
-    0% { transform: scale(1) scaleX(-1); }
-    100% { transform: scale(1.1) scaleX(-1); }
+    0% { transform: scale(1.05) scaleX(-1); }
+    100% { transform: scale(1) scaleX(-1); }
   }
 </style>
 
   <!-- Inventory screen for game 3 -->
-  <div id="game-3-inventory">
-    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+<div id="game-3-inventory">
+    <!-- my goal is to have these be faded and have a lock on them, but after killing the monster with that type, you unlock that item, clicking on an item you have, will equip it on your monster -->
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto inventory-item" type="button" data-item="Flame" onclick="equipItem('Flame')">
       <img src="/comp1004-PROJECT/public/Images/redSteak320px.png" class="w-full h-auto" />
       Flame Item
     </button>
-    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto inventory-item" type="button" data-item="Molten" onclick="equipItem('Molten')">
       <img src="/comp1004-PROJECT/public/Images/redSteak320px.png" class="w-full h-auto" />
       Molten Item
     </button>
-    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto inventory-item" type="button" data-item="Medic" onclick="equipItem('Medic')">
       <img src="/comp1004-PROJECT/public/Images/greenSteak320px.png" class="w-full h-auto" />
       Medic Item
     </button>
-    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto inventory-item" type="button" data-item="Vampiric" onclick="equipItem('Vampiric')">
       <img src="/comp1004-PROJECT/public/Images/greenSteak320px.png" class="w-full h-auto" />
       Vampiric Item
     </button>
-    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto inventory-item" type="button" data-item="Charge" onclick="equipItem('Charge')">
       <img src="/comp1004-PROJECT/public/Images/greySteak320px.png" class="w-full h-auto" />
       Charge Item
     </button>
-    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto inventory-item" type="button" data-item="Grounded" onclick="equipItem('Grounded')">
       <img src="/comp1004-PROJECT/public/Images/greySteak320px.png" class="w-full h-auto" />
       Grounded Item
     </button>
-    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto inventory-item" type="button" data-item="Blade" onclick="equipItem('Blade')">
       <img src="/comp1004-PROJECT/public/Images/metalFrogSkull320px.png" class="w-full h-auto" />
       Blade Item
     </button>
-    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto inventory-item" type="button" data-item="Armour" onclick="equipItem('Armour')">
       <img src="/comp1004-PROJECT/public/Images/metalFrogSkull320px.png" class="w-full h-auto" />
       Armour Item
     </button>
-    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto inventory-item" type="button" data-item="Sandstorm" onclick="equipItem('Sandstorm')">
       <img src="/comp1004-PROJECT/public/Images/spineCollection320px.png" class="w-full h-auto" />
       Sandstorm Item
     </button>
-    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto inventory-item" type="button" data-item="Flora" onclick="equipItem('Flora')">
       <img src="/comp1004-PROJECT/public/Images/spineCollection320px.png" class="w-full h-auto" />
       Flora Item
     </button>
-    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto inventory-item" type="button" data-item="Breeze" onclick="equipItem('Breeze')">
       <img src="/comp1004-PROJECT/public/Images/wing320px.png" class="w-full h-auto" />
       Breeze Item
     </button>
-    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto inventory-item" type="button" data-item="Clense" onclick="equipItem('Clense')">
       <img src="/comp1004-PROJECT/public/Images/wing320px.png" class="w-full h-auto" />
       Clense Item
     </button>
-    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto inventory-item" type="button" data-item="Venom" onclick="equipItem('Venom')">
       <img src="/comp1004-PROJECT/public/Images/poisonEye320px.png" class="w-full h-auto" />
       Venom Item
     </button>
-    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto inventory-item" type="button" data-item="Viral" onclick="equipItem('Viral')">
       <img src="/comp1004-PROJECT/public/Images/poisonEye320px.png" class="w-full h-auto" />
       Viral Item
     </button>
-    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto inventory-item" type="button" data-item="Freeze" onclick="equipItem('Freeze')">
       <img src="/comp1004-PROJECT/public/Images/iceEye320px.png" class="w-full h-auto" />
       Freeze Item
     </button>
-    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto" type="button" onclick="">
+    <button class="p-2 m-2 rounded-lg border-2 border-solid border-black w-1/4 mx-auto inventory-item" type="button" data-item="Slow" onclick="equipItem('Slow')">
       <img src="/comp1004-PROJECT/public/Images/iceEye320px.png" class="w-full h-auto" />
       Slow Item
     </button>

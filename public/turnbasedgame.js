@@ -17,11 +17,16 @@ const typeGUI = document.querySelector('#game-3-type-choice');
 const subclassGui = document.querySelector('#game-3-subclass-choice')
 const subclassChoice0 = document.querySelector('#subclass0');
 const subclassChoice1 = document.querySelector('#subclass1');
-const inventoryGUI = document.querySelector('#game-3-inventory')
+const inventoryGUI = document.querySelector('#game-3-inventory');
+
+const combatButtons = document.querySelector('#game-3-combat-buttons');
+const combatLossButtons = document.querySelector('#game-3-loss-buttons');
+const combatWinButtons = document.querySelector('#game-3-win-buttons');
+
+const scoreBox = document.querySelector('#scoreBox');
 
 // this is a box to tell the user what just happened, as without this, the game would be very confusing
 const whatJustHappenedBox = document.querySelector('#what-just-happened-box');
-let history = [];
 
 function HealthBar(progression, end, length){
 	let progressBar = "";
@@ -42,19 +47,6 @@ function HealthBar(progression, end, length){
 	return progressBar;
 }
 
-let Types = ["Fire", "Ice", "Healer", "Poison", "Ground", "Flying", "Metal", "Electric"];
-let subclasses = ["Flame", "Molten", "Freeze", "Slow", "Medic", "Vampiric", "Venom", "Viral", "Sandstorm", "Flora", "Breeze", "Clense", "Armour", "Blade", "Grounded", "Charge"];
-// items are the equivelant of a craftable second subclass
-// Type 1 can access subclass 1 and 2, Type 2 can access subclass 3 and 3, ect
-
-let playerHealth = 100;
-let enemyHealth = 100;
-
-let playerMonster = ['','','']; // 0 is type, 1 is subclass, 2 is chosen item
-let playerItemList = [];
-let playerStatusList = [];
-let enemyStatusList = [];
-let tmp = 0;
 function chooseType(value){
 	playerMonster[0] = Types[value];
 	tmp = value;
@@ -75,6 +67,7 @@ function subclass(value){
 	playerTypeGUI.innerHTML = playerMonster[0];
 	playerSubclassGUI.innerHTML = playerMonster[1];
 	playerItemGUI.innerHTML = "no item";
+	playerStatusGUI.innerHTML = "Status effects: None";
 	playerHealthGUI.innerHTML = HealthBar(playerHealth,100,50);
 	
 	generateRandomOpponent();
@@ -136,6 +129,7 @@ function generateRandomOpponent(){
 	enemyHealthGUI.innerHTML = HealthBar(enemyHealth,100,50);
 	battleIcon(tmp, "enemy")
 	enemyItemGUI.innerHTML = "no item";
+	enemyStatusGUI.innerHTML = "Status effects: None";
 }
 
 // in previous versions of the game, the same status could be applied multiple times which turned the game into spamming attack boosts or defence boosts as they were multiplicative
@@ -180,12 +174,14 @@ function subclassEffects(subclass, user, damage){
 		applyDefensiveEffects(target);
 		targetHealth -= (damage / 2);
 		whatJustHappened("The " + user + " attacks with blunt ice attacks, dealing " + (damage/2) + " damage and accumulating frost that may freeze the " + target);
-		tmp = getRandomInt(2);
+		// this was changed to a 1 in 3 chace due to being too strong
+		tmp = getRandomInt(3);
 		if (tmp == 0){
 			addUniqueStatus(targetStatusList, "Frozen");	
 		}
 	} else if (subclass == "Slow"){
 		// skips the targets next turn, however, only regular attacks can be used against it during that turn - slow status
+		// I later changed this to not allowing another ice move
 		addUniqueStatus(targetStatusList, "Slowed");
 		whatJustHappened("The " + user + " slows its opponent");
 	} else if (subclass == "Medic"){
@@ -272,9 +268,7 @@ function subclassEffects(subclass, user, damage){
 	enemyStatusGUI.innerHTML = "Status effects: " + (enemyStatusList.length ? enemyStatusList.join(", ") : "None");
 }
 
-// these are for the flora healing status, so that the player cant use the enemys flora ect ect
-let playerFloraHealing = 0;
-let enemyFloraHealing = 0;
+
 // these status execution functions is structured similarly to the function that applys statuses as I found that logic to already be robust, therefore using similar logic would be useful
 function applyEveryTurnEffects(target, damage) {
     let targetStatusList, targetHealth;
@@ -300,14 +294,16 @@ function applyEveryTurnEffects(target, damage) {
             targetHealth -= (damage/4);
 			whatJustHappened("The " + target + " took " + (damage/4) + " damage from the Sandstorm");
         } else if (status === "Flora") {
-            opponentHealth -= (damage/4)*3;
+            
 			// flora needs to be seperated so that it will not work unintentionally if both monsters use it
             if (target === "Enemy") {
-				whatJustHappened("Your monster was hurt by the flora and took " + ((damage/4)*3) + " damage which the Flora is now storing");
-                enemyFloraHealing += (damage/4)*3;
+				opponentHealth -= (enemyBaseDamage/4)*3;
+				whatJustHappened("Your monster was hurt by the flora and took " + ((enemyBaseDamage/4)*3) + " damage which the Flora is now storing");
+                enemyFloraHealing += (enemyBaseDamage/4)*3;
             } else {
-				whatJustHappened("The enemy was hurt by the flora and took " + ((damage/4)*3) + " damage which the Flora is now storing");
-                playerFloraHealing += (damage/4)*3;
+				opponentHealth -= (playerBaseDamage/4)*3;
+				whatJustHappened("The enemy was hurt by the flora and took " + ((playerBaseDamage/4)*3) + " damage which the Flora is now storing");
+                playerFloraHealing += (playerBaseDamage/4)*3;
             }
         }
     });
@@ -322,19 +318,17 @@ function applyEveryTurnEffects(target, damage) {
 }
 
 function applyDefensiveEffects(target) {
-    let targetStatusList, targetHealth;
+    let targetStatusList, targetHealth, reducedDamage;
 
     if (target === "Player") {
         targetStatusList = playerStatusList;
         targetHealth = playerHealth;
-		incomingDamage = enemyBaseDamage;
+		reducedDamage = enemyBaseDamage;
     } else if (target === "Enemy") {
         targetStatusList = enemyStatusList;
         targetHealth = enemyHealth;
-		incomingDamage = playerBaseDamage;
+		reducedDamage = playerBaseDamage;
     }
-
-    let reducedDamage = incomingDamage;
 
     targetStatusList.forEach(status => {
         if (status === "Minor-Def-Up") {
@@ -370,20 +364,19 @@ function applyDefensiveEffects(target) {
 }
 
 function applyOffensiveEffects(attacker) {
-    let attackerStatusList, attackerHealth;
+    let attackerStatusList, attackerHealth, modifiedDamage;
     
 
     if (attacker === "Player") {
         attackerStatusList = playerStatusList;
         attackerHealth = playerHealth;
-		baseDamage = playerBaseDamage;
+		modifiedDamage = playerBaseDamage;
     } else {
         attackerStatusList = enemyStatusList;
         attackerHealth = enemyHealth;
-		baseDamage = enemyBaseDamage;
+		modifiedDamage = enemyBaseDamage;
     }
 	
-	let modifiedDamage = baseDamage;
     
 	attackerStatusList.forEach(status => {
         if (status === "Minor-Dmg-Up") {
@@ -398,31 +391,30 @@ function applyOffensiveEffects(attacker) {
             modifiedDamage *= 0.7;
         } else if (status === "Major-Dmg-Down") {
             modifiedDamage *= 0.55;
-        } else if (status === "Life-Steal") {
-            attackerHealth += modifiedDamage * 0.3;
-			whatJustHappened("The attacker had Life-Steal and healed" + (modifiedDamage * 0.3) + " health");
-        } else if (status === "Tmp-Major-Dmg-Up-1") {
+        }else if (status === "Tmp-Major-Dmg-Up-1") {
             modifiedDamage *= 1.75;
             attackerStatusList.splice(attackerStatusList.indexOf("Tmp-Major-Dmg-Up-1"), 1);
         } else if (status === "Tmp-Major-Dmg-Up-2") {
             modifiedDamage *= 1.75;
             attackerStatusList.splice(attackerStatusList.indexOf("Tmp-Major-Dmg-Up-2"), 1);
             attackerStatusList.push("Tmp-Major-Dmg-Up-1");
-        }
+        } else if (status === "Life-Steal") {
+            attackerHealth += modifiedDamage * 0.3;
+			whatJustHappened("The attacker had Life-Steal and healed " + (modifiedDamage * 0.4) + " health");
+        } 
     });
 
     if (attacker === "Player") {
-        playerHealth = attackerHealth;
-		playerBaseDamage = baseDamage;
-    } else {
-        enemyHealth = attackerHealth;
-		enemyBaseDamage = baseDamage;
-    }
+		playerHealth = attackerHealth;
+		playerBaseDamage = modifiedDamage;
+	} else {
+		enemyHealth = attackerHealth;
+		enemyBaseDamage = modifiedDamage;
+	}
+	
 }
 
-// I needed a way to stop either side from using subclass moves on slowed opponents, as stated in the description of the slowed status
-let playerSubclassMovesAllowed = 1;
-let enemySubclassMovesAllowed = 1;
+
 function checkTurnSkip(target) {
     let targetStatusList;
 
@@ -437,30 +429,31 @@ function checkTurnSkip(target) {
         targetStatusList.splice(targetStatusList.indexOf("Frozen"), 1);
 		// after testing, I found freeze to be the strongest subclass by far, so I decided to implement the same thing as slow, to limit its power
         if (target === "Player") {
-			enemySubclassMovesAllowed = 0;
+			enemyIceMovesAllowed = 0;
 		} else {
-			playerSubclassMovesAllowed = 0;
+			playerIceMovesAllowed = 0;
 		}
 		return "frozenSkip";
     } else if (targetStatusList.includes("Slowed")) {
         targetStatusList.splice(targetStatusList.indexOf("Slowed"), 1);
         if (target === "Player") {
-			enemySubclassMovesAllowed = 0;
+			enemyIceMovesAllowed = 0;
 		} else {
-			playerSubclassMovesAllowed = 0;
+			playerIceMovesAllowed = 0;
 		}
 		return "slowSkip";
     }
 
 	if (target === "Player") {
-		enemySubclassMovesAllowed = 1;
+		enemyIceMovesAllowed = 1;
 	} else {
-		playerSubclassMovesAllowed = 1;
+		playerIceMovesAllowed = 1;
 	}
     return "regularTurn";
 }
- // this function checks if either side has flora and if they do, then it is applied
- function checkFloraHealing(target) {
+
+// this function checks if either side has flora and if they do, then it is applied
+function checkFloraHealing(target) {
 	if (playerStatusList.includes("Flora") && target == "Player") {
 		playerStatusList.splice(playerStatusList.indexOf("Flora"), 1);
 		if (playerFloraHealing < 10){
@@ -468,6 +461,9 @@ function checkTurnSkip(target) {
 			playerFloraHealing = 10;
 		}
 		playerHealth += playerFloraHealing;
+		if (playerHealth > 100){
+			playerHealth = 100;
+		}
 		whatJustHappened("Your monster consumed the flora and healed " + playerFloraHealing + " health");
 		// I experimented with making the flora attack do less damage but the healing to stack(not get reset therefore continually climbing) however this was far too strong of an effect 
 		playerFloraHealing = 0;
@@ -479,14 +475,28 @@ function checkTurnSkip(target) {
 			enemyFloraHealing = 10;
 		}
 		enemyHealth += enemyFloraHealing;
+		if (enemyHealth > 100){
+			enemyHealth = 100;
+		}
 		whatJustHappened("The enemy consumed the flora and healed " + enemyFloraHealing + " health");
 		enemyFloraHealing = 0;
 	}
 }
 
-// initialising these variables as global
-let playerBaseDamage = 0;
-let enemyBaseDamage = 0;
+// removes the locked state placed over the button during initialisation
+// to save time and help me work out the logic, I made this into a function despite it 
+function unlockItem(itemName) {
+	// every time the function is run, this will be a different button based on the parameters used, this is great :)
+	const button = document.querySelector(`.inventory-item[data-item="${itemName}"]`);
+	if (button) {
+		// removes the overlay that shows the item as locked
+	    button.classList.remove("opacity-50", "pointer-events-none", "relative");
+	    button.querySelector("div")?.remove();
+		// and of course, you need to be able to click the button again
+	    button.disabled = false;
+		whatJustHappened("You unlocked  the " + itemName + " Item, you can now equip it in your inventory");
+	}
+}
 
 // this function is essentailly where the game's combat plays out
 function playerMove(move){
@@ -512,13 +522,13 @@ function playerMove(move){
 			applyDefensiveEffects("Enemy");
 			enemyHealth -= playerBaseDamage;
 			whatJustHappened("You attacked the enemy and dealt " + playerBaseDamage + " Damage, reducing it to " + enemyHealth + " Health");
-		} else if (move == "subclass" && playerSubclassMovesAllowed == 1){
+		} else if (move == "subclass" && (playerIceMovesAllowed == 1 || (playerSubclassGUI.innerHTML != "Freeze" && playerSubclassGUI.innerHTML != "Slow"))){
 			subclassEffects(playerSubclassGUI.innerHTML, "Player", playerBaseDamage);
-		} else if (move == "item" && playerSubclassMovesAllowed == 1){
+		} else if (move == "item" && (playerIceMovesAllowed == 1 || (playerItemGUI.innerHTML != "Freeze" && playerItemGUI.innerHTML != "Slow"))){
 			subclassEffects(playerItemGUI.innerHTML, "Player", playerBaseDamage);
 		}	
 	}
-	applyEveryTurnEffects("Player",playerBaseDamage);
+	applyEveryTurnEffects("Player",enemyBaseDamage);
 	
 	// enemy's turn
 	let enemyTurnState = checkTurnSkip("Enemy");
@@ -531,7 +541,7 @@ function playerMove(move){
 		let enemyMove = 0;
 		// rand 1-3(1-2 if no item) for what the enemy will do
 		// more advanced logic may be added later but is outside current sprint scope
-		if (enemySubclassMovesAllowed == 0){
+		if (enemyIceMovesAllowed == 0){
 			enemyMove = 0;	
 		}else if (enemyItemGUI.innerHTML == "no item"){
 			enemyMove = getRandomInt(2);
@@ -549,18 +559,24 @@ function playerMove(move){
 			subclassEffects(enemyItemGUI.innerHTML, "Enemy", enemyBaseDamage);
 		}
 	}
-	applyEveryTurnEffects("Enemy",enemyBaseDamage);
+	applyEveryTurnEffects("Enemy",playerBaseDamage);
 	// check if either monster's health is below 0
 	// if it isnt, show health and end turn
 	// if user is, show stat screen and ask them to play again or load their save
 	// if enemy is, enemy drops ([type] core), this can be turned into an item fo either of that type's subclasses 
 	// e.g. Ice core can be turned into Freeze Item or Slow Item, letting the player's monster use that ability
 
-	if(playerHealth < 0){
-		
-	}
-	if(enemyHealth < 0){
-
+	if(playerHealth <= 0){
+		whatJustHappened("Your monster was defeated");
+		combatButtons.classList.add('hidden');
+		combatLossButtons.classList.remove('hidden');
+	} else if(enemyHealth <= 0){
+		whatJustHappened("The Enemy was defeated");
+		unlockItem(enemySubclassGUI.innerHTML);
+		combatButtons.classList.add('hidden');
+		combatWinButtons.classList.remove('hidden');
+		playerScore += 1;
+		scoreBox.innerHTML = "Score: " + playerScore;
 	}
 
 	
@@ -580,8 +596,31 @@ function closeInventory(){
 	inventoryGUI.classList.add('hidden');
 }
 
+// locks all the inventory items so that the player will have to unlock them by killing their associated monster.
+document.addEventListener("DOMContentLoaded", () => {
 
+	document.querySelectorAll(".inventory-item").forEach(button => {
+		const itemName = button.dataset.item;
 
+		if (!playerItemList.includes(itemName)) {
+			// the locked state looks like they are faded out and will have a padlock emoji covering them
+			button.classList.add("opacity-50", "pointer-events-none", "relative");
+			button.innerHTML += `<div class="absolute inset-0 flex items-center justify-center text-2xl font-bold">🔒</div>`;
+			button.disabled = true;
+		}
+	});
+});
+
+// when the user clicks an item in their inventory, this will equip it onto their monster
+function equipItem(itemName) {
+	const button = document.querySelector(`.inventory-item[data-item="${itemName}"]`);
+	if (button && !button.disabled) {
+		playerMonster[2] = itemName;
+		playerItemGUI.innerHTML = itemName;
+		whatJustHappened("You equipped " + itemName + " Item");
+		closeInventory();
+	}
+}
 
 
 
@@ -593,7 +632,118 @@ function whatJustHappened(newString) {
     }
     whatJustHappenedBox.innerHTML = history.join('<hr>');
 }
+
+// score should only be reset if the player loses and clicks retry and should be be saved alongside your monster and inventory:
+let playerScore = 0;
+scoreBox.innerHTML = "Score: " + playerScore;
+// I am moving all the global variables here so that I can arrange them into functions for retrying or facing a new monster
+let history = [];
+let Types = ["Fire", "Ice", "Healer", "Poison", "Ground", "Flying", "Metal", "Electric"];
+let subclasses = ["Flame", "Molten", "Freeze", "Slow", "Medic", "Vampiric", "Venom", "Viral", "Sandstorm", "Flora", "Breeze", "Clense", "Armour", "Blade", "Grounded", "Charge"];
+// items are the equivelant of a craftable second subclass
+// Type 1 can access subclass 1 and 2, Type 2 can access subclass 3 and 3, ect
+
+let playerHealth = 100;
+let enemyHealth = 100;
+
+let playerMonster = ['','','']; // 0 is type, 1 is subclass, 2 is chosen item
+let playerItemList = [];
+let playerStatusList = [];
+let enemyStatusList = [];
+let tmp = 0;
+
+// these are for the flora healing status, so that the player cant use the enemys flora ect ect
+let playerFloraHealing = 0;
+let enemyFloraHealing = 0;
+
+// I needed a way to stop either side from using subclass moves on slowed opponents, as stated in the description of the slowed status
+let playerIceMovesAllowed = 1;
+let enemyIceMovesAllowed = 1;
+
+// initialising these variables as global
+let playerBaseDamage = 0;
+let enemyBaseDamage = 0;
+
+combatButtons.classList.remove('hidden');
+combatLossButtons.classList.add('hidden');
+combatWinButtons.classList.add('hidden');
+
 typeGUI.classList.remove('hidden');
 subclassGui.classList.add('hidden');
 combatGUI.classList.add('hidden');
 inventoryGUI.classList.add('hidden');
+
+
+function retry(){
+	playerScore = 0;
+	scoreBox.innerHTML = "Score: " + playerScore;
+	
+	playerHealth = 100;
+	enemyHealth = 100;
+
+	playerMonster = ['','','']; // 0 is type, 1 is subclass, 2 is chosen item
+	playerItemList = [];
+	document.querySelectorAll(".inventory-item").forEach(button => {
+		const itemName = button.dataset.item;
+
+		if (!playerItemList.includes(itemName)) {
+			// the locked state looks like they are faded out and will have a padlock emoji covering them
+			button.classList.add("opacity-50", "pointer-events-none", "relative");
+			button.innerHTML += `<div class="absolute inset-0 flex items-center justify-center text-2xl font-bold">🔒</div>`;
+			button.disabled = true;
+		}
+	});
+	playerStatusList = [];
+	enemyStatusList = [];
+	playerFloraHealing = 0;
+	enemyFloraHealing = 0;
+	playerIceMovesAllowed = 1;
+	enemyIceMovesAllowed = 1;
+	playerBaseDamage = 0;
+    enemyBaseDamage = 0;
+
+	combatButtons.classList.remove('hidden');
+	combatLossButtons.classList.add('hidden');
+	combatWinButtons.classList.add('hidden');
+
+	typeGUI.classList.remove('hidden');
+	subclassGui.classList.add('hidden');
+	combatGUI.classList.add('hidden');
+	inventoryGUI.classList.add('hidden');
+
+	whatJustHappened("The last fight didn't go so well, lets hope this one is better");
+}
+
+function nextEnemy(){
+	playerHealth = 100;
+	enemyHealth = 100;
+	playerStatusList = [];
+	enemyStatusList = [];
+	playerFloraHealing = 0;
+	enemyFloraHealing = 0;
+	playerIceMovesAllowed = 1;
+	enemyIceMovesAllowed = 1;
+	playerBaseDamage = 0;
+    enemyBaseDamage = 0;
+
+	playerTypeGUI.innerHTML = playerMonster[0];
+	playerSubclassGUI.innerHTML = playerMonster[1];
+	playerItemGUI.innerHTML = playerMonster[2];
+	playerStatusGUI.innerHTML = "Status effects: None";
+	playerHealthGUI.innerHTML = HealthBar(playerHealth,100,50);
+
+	generateRandomOpponent();
+	let itemModifier= getRandomInt(16);
+	enemyItemGUI.innerHTML = subclasses[itemModifier];
+
+	combatButtons.classList.remove('hidden');
+	combatLossButtons.classList.add('hidden');
+	combatWinButtons.classList.add('hidden');
+
+	combatGUI.classList.remove('hidden');
+	typeGUI.classList.add('hidden');
+	subclassGui.classList.add('hidden');
+	inventoryGUI.classList.add('hidden');
+	
+	whatJustHappened("You face a new enemy, defeat it, just like the last");
+}
