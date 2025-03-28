@@ -54,9 +54,9 @@
       <p class="text-sm" id="total-clicker-output"></p>
       <p class="text-base">Current clicks:</p>
       <p class="text-xl" id="clicker-output"></p>
-      <button class="p-8" type="button" onclick="clicked()">Click Me!</button>
+      <button class="p-8 rounded-lg border-2 border-dashed border-black" type="button" onclick="clicked()">Click me to score</button>
  
-      <button class="p-8" type="button" onclick="reset()">Reset Me!</button>
+      <button class="p-8" type="button" onclick="reset()">Reset Me(you will lose all unsaved clicker game data)</button>
 
       <hr>
       <p class="text-xl">Store:</p>
@@ -87,7 +87,7 @@
           <p class="text-sm">Loan offer(20% interest):</p>
           <!--loan offer should be 50x bonus level-->
           <p class="text-sm" id="loan-offer"></p>
-          <p class="text-sm">current debt:</p>
+          <p class="text-sm">Current debt:</p>
           <p class="text-sm" id="debt"></p>
 
           <p class="text-xs">(autoclicks are cancelled while in debt)</p>
@@ -376,8 +376,19 @@
   </div>
   <script src="./gameselector.js"></script>
 
-  <div class="w-full max-w-md p-8 mx-auto mt-24 bg-white shadow-sm rounded-lg text-center">
-    <button class="p-8" type="button" onclick="savedata()">Save your scores!</button>
+  
+  <div class="w-full max-w-md p-8 mx-auto mt-24 bg-white shadow-lg rounded-lg text-center border border-gray-300">
+    
+    <p class="px-2">Save to a file:</p>
+    <button class="p-2 my-2 rounded-lg border-2 border-solid border-black mx-auto" type="button" onclick="saveData()">Save your scores</button>
+    
+    <p class="px-2">Load a save file:</p>
+    <input class="hidden" type="file" id="loadFileInput" accept="application/json">
+    <span id="fileName" class="text-gray-600 italic">No file selected</span>
+      <button class="p-2 mb-2 rounded-lg border-2 border-solid border-black mx-auto" type="button" onclick="document.getElementById('loadFileInput').click()">Choose File</button>
+    <br>
+    <button id="loadButton" class="p-2 mb-2 rounded-lg border-2 border-solid border-black mx-auto" type="button" onclick="loadSaveData()" disabled>Load Save File</button>
+  
     <script src="./jsonlogic.js"></script>
   </div>
 

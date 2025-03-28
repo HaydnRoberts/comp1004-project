@@ -42,15 +42,18 @@ function reset(){
 }
 
 // initial output
-clickerOutput.innerHTML = clicks;
-totalClickerOutput.innerHTML = total_clicks;
-bonusLevel.innerHTML = bonusClicks;
-bonusPrice.innerHTML = 20 +(bonusClicks)*(bonusClicks);
-autoLevel.innerHTML = autoClicks;
-autoPrice.innerHTML = 20 +(autoClicks)*(autoClicks);
-loanOffer.innerHTML = 50*(bonusClicks+1);
-debtAmmount.innerHTML = debtValue;
-
+// turned into a function to make loading saves easier
+function loadClickerGame(){
+    clickerOutput.innerHTML = clicks;
+    totalClickerOutput.innerHTML = total_clicks;
+    bonusLevel.innerHTML = bonusClicks;
+    bonusPrice.innerHTML = 20 +(bonusClicks)*(bonusClicks);
+    autoLevel.innerHTML = autoClicks;
+    autoPrice.innerHTML = 20 +(autoClicks)*(autoClicks);
+    loanOffer.innerHTML = 50*(bonusClicks+1);
+    debtAmmount.innerHTML = debtValue;
+}
+loadClickerGame();
 
 // shop section
 

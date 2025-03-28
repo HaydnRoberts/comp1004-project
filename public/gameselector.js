@@ -39,7 +39,7 @@ game3Buttons.forEach(button => {
 });
 
 
-// only show game block 1 initially (temporaraly changed to block 3 for testing - please revert this for final version)
-game3Block.classList.remove('hidden');
-game2Block.classList.add('hidden');
+// only show game block 1 initially
+game2Block.classList.remove('hidden');
 game1Block.classList.add('hidden');
+game3Block.classList.add('hidden');

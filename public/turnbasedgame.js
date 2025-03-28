@@ -55,12 +55,11 @@ function chooseType(value){
 	subclassChoice1.innerHTML = subclasses[(tmp*2)+1];
 	
 	battleIcon(value ,"player");
-	// this flips the player's icon so that it is facing the opposing monster
-	//playerImageGUI.style.transform = playerImageGUI.style.transform === 'scaleX(-1)' ? 'scaleX(1)' : 'scaleX(-1)';
-	
+
 	typeGUI.classList.add('hidden');
 	subclassGui.classList.remove('hidden');
 }
+
 function subclass(value){
 	playerMonster[1] = subclasses[((tmp*2)+value)];
 
@@ -486,6 +485,7 @@ function checkFloraHealing(target) {
 // removes the locked state placed over the button during initialisation
 // to save time and help me work out the logic, I made this into a function despite it 
 function unlockItem(itemName) {
+	
 	// every time the function is run, this will be a different button based on the parameters used, this is great :)
 	const button = document.querySelector(`.inventory-item[data-item="${itemName}"]`);
 	if (button) {
@@ -495,6 +495,9 @@ function unlockItem(itemName) {
 		// and of course, you need to be able to click the button again
 	    button.disabled = false;
 		whatJustHappened("You unlocked  the " + itemName + " Item, you can now equip it in your inventory");
+		if (!playerItemList.includes(itemName)) {
+			playerItemList.push(itemName);
+		}
 	}
 }
 
@@ -599,6 +602,11 @@ function closeInventory(){
 // locks all the inventory items so that the player will have to unlock them by killing their associated monster.
 document.addEventListener("DOMContentLoaded", () => {
 
+	loadInventory();
+});
+
+// I turned this into a function so I can call it if the player loads a save
+function loadInventory(){
 	document.querySelectorAll(".inventory-item").forEach(button => {
 		const itemName = button.dataset.item;
 
@@ -609,7 +617,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			button.disabled = true;
 		}
 	});
-});
+}
 
 // when the user clicks an item in their inventory, this will equip it onto their monster
 function equipItem(itemName) {
@@ -746,4 +754,53 @@ function nextEnemy(){
 	inventoryGUI.classList.add('hidden');
 	
 	whatJustHappened("You face a new enemy, defeat it, just like the last");
+}
+
+function showLoadedMonster(){
+	playerHealth = 100;
+	enemyHealth = 100;
+	playerStatusList = [];
+	enemyStatusList = [];
+	playerFloraHealing = 0;
+	enemyFloraHealing = 0;
+	playerIceMovesAllowed = 1;
+	enemyIceMovesAllowed = 1;
+	playerBaseDamage = 0;
+    enemyBaseDamage = 0;
+
+	// I added a failsafe here for if the user didnt save a monster
+	if (playerMonster[0] && playerMonster[1]){
+		battleIcon(Types.indexOf(playerMonster[0]) ,"player");
+		playerTypeGUI.innerHTML = playerMonster[0];
+		playerSubclassGUI.innerHTML = playerMonster[1];
+		// this is a failsafe for if the monster hasn't equiped an item yet
+		if (!playerMonster[2]){
+			playerItemGUI.innerHTML = "No item";
+		} else {
+			playerItemGUI.innerHTML = playerMonster[2];
+		}
+		playerStatusGUI.innerHTML = "Status effects: None";
+		playerHealthGUI.innerHTML = HealthBar(playerHealth,100,50);
+
+		generateRandomOpponent();
+		if (playerScore >= 1){
+			let itemModifier= getRandomInt(16);
+			enemyItemGUI.innerHTML = subclasses[itemModifier];
+		}
+
+		combatButtons.classList.remove('hidden');
+		combatLossButtons.classList.add('hidden');
+		combatWinButtons.classList.add('hidden');
+
+		combatGUI.classList.remove('hidden');
+		typeGUI.classList.add('hidden');
+		subclassGui.classList.add('hidden');
+		inventoryGUI.classList.add('hidden');
+	} else {
+		combatGUI.classList.add('hidden');
+		typeGUI.classList.remove('hidden');
+		subclassGui.classList.add('hidden');
+		inventoryGUI.classList.add('hidden');
+	}
+	scoreBox.innerHTML = "Score: " + playerScore;
 }
