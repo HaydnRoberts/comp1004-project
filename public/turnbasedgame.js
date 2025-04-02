@@ -100,7 +100,6 @@ function battleIcon(typeID, player){
 		target = "ElectricDog320px.webp";
 	} else {
 		console.warn("Unknown type:", tmpType);
-		target = "placeholder-200x200.jpg"; // Set a default fallback image
 	}
 	
 
